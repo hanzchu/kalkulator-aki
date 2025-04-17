@@ -1,128 +1,221 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Hasil AKI</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-7">
-            <div class="card shadow-sm border-0">
-                <div class="card-body">
-                    <h3 class="mb-4">Estimasi Hasil Analisa Kelayakan Investasi</h3>
+@extends('layouts.app')
 
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>Nama Proyek</th>
-                            <td>{{ $nama_project }}</td>
-                        </tr>
-                        <tr>
-                            <th>Biaya Investasi</th>
-                            <td>Rp {{ number_format($biaya_investasi, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <th>Pendapatan per Bulan</th>
-                            <td>Rp {{ number_format($pendapatan_per_bulan, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <th>Periode</th>
-                            <td>{{ $periode_bulan }} bulan</td>
-                        </tr>
-                        <tr class="table-light">
-                            <th class="fw-bold">Revenue</th>
-                            <td>
-                                Total: <strong>Rp {{ number_format($revenue_total, 0, ',', '.') }}</strong><br>
-                                OTC Akhir: Rp {{ number_format($revenue_otc_akhir, 0, ',', '.') }}<br>
-                                Bulanan Akhir: Rp {{ number_format($revenue_bulanan_akhir, 0, ',', '.') }} x {{ $periode_bulan }} bulan
-                            </td>
-                        </tr>
-                        <tr class="table-light">
-                            <th class="fw-bold">Cost OBL</th>
-                            <td>
-                                Total: <strong>Rp {{ number_format(($cost_obl_bulanan * $periode_bulan) + $cost_obl_otc, 0, ',', '.') }}</strong><br>
-                                OTC: Rp {{ number_format($cost_obl_otc, 0, ',', '.') }}<br>
-                                Bulanan: Rp {{ number_format($cost_obl_bulanan, 0, ',', '.') }} x {{ $periode_bulan }} bulan = 
-                                Rp {{ number_format($cost_obl_bulanan * $periode_bulan, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Biaya Operasional + Marketing</th>
-                            <td>
-                                {{ $biaya_operasional + $biaya_marketing }}% || 
-                                (Rp {{ number_format($biaya_opex_total, 0, ',', '.') }})<br>
-                                <small class="text-muted">
-                                    Biaya Marketing: {{ $biaya_marketing }}% (Rp {{ number_format($biaya_marketing_total, 0, ',', '.') }})<br>
-                                    Biaya Operasional: {{ $biaya_operasional }}% (Rp {{ number_format($biaya_operasional_total, 0, ',', '.') }})
-                                </small>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Bad Debt ({{ $bad_debt_input }}%)</th>
-                            <td>Rp {{ number_format($bad_debt, 0, ',', '.') }}</td>
-                        </tr>
+@section('content')
 
-                        <tr>
-                            <th>EBITDA</th>
-                            <td>Rp {{ number_format($ebitda, 0, ',', '.') }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Depresiasi</th>
-                            <td>Rp {{ number_format($depresiasi, 0, ',', '.') }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>EBIT</th>
-                            <td>Rp {{ number_format($ebit, 0, ',', '.') }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Taxes ({{ $taxes_input }}%)</th>
-                            <td>Rp {{ number_format($pajak, 0, ',', '.') }}</td>
-                        </tr>
-
-                        <tr class="table-warning fw-bold">
-                            <th>Net Income</th>
-                            <td>Rp {{ number_format($net_income, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr>
-                            <th>BOP Lakwas (0.7%)</th>
-                            <td>Rp {{ number_format($bop_lakwas, 0, ',', '.') }}</td>
-                        </tr>
-
-                        <tr>
-                            <th>Biaya Capex (Investasi + BOP Lakwas)</th>
-                            <td>Rp {{ number_format($biaya_capex, 0, ',', '.') }}</td>
-                        </tr>
-                        <tr class="table-success fw-bold">
-                            <th>NPV</th>
-                            <td>
-                                Rp {{ number_format($npv, 0, ',', '.') }}
-                                <span class="badge bg-{{ $status_npv === 'Layak' ? 'success' : 'danger' }} ms-2">
-                                    {{ $status_npv }}
-                                </span>
-                            </td>
-                        </tr>
-
-                        <tr class="table-primary fw-bold">
-                            <th>IRR</th>
-                            <td>
-                                {{ is_numeric($irr) ? $irr . '%' : 'Tidak ditemukan' }}
-                                <span class="badge bg-{{ $status_irr === 'Layak' ? 'success' : 'danger' }} ms-2">
-                                    {{ $status_irr }}
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <a href="{{ url('/investasi/kembali') }}" class="btn btn-secondary mt-3">Kembali ke Form</a>
-
-                </div>
-            </div>
-        </div>
-    </div>
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
 </div>
-</body>
-</html>
+@endif
+
+<h4 class="mb-4">Estimasi Hasil Analisa Kelayakan Investasi</h4>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Nama Proyek</th>
+        <td>{{ $nama_project }}</td>
+    </tr>
+    <tr>
+        <th>Biaya Investasi</th>
+        <td>Rp {{ number_format($biaya_investasi, 0, ',', '.') }}</td>
+    </tr>
+    <tr>
+        <th>Pendapatan per Bulan</th>
+        <td>Rp {{ number_format($pendapatan_per_bulan, 0, ',', '.') }}</td>
+    </tr>
+    <tr>
+        <th>Periode</th>
+        <td>{{ $periode_bulan }} bulan</td>
+    </tr>
+</table>
+
+<h5 class="mt-4">Informasi Umum</h5>
+<table class="table table-sm table-bordered">
+    <tr class="table-light">
+        <th class="fw-bold">Revenue (Bruto)</th>
+        <td>
+            Total: <strong>Rp {{ number_format($revenue_total_bruto, 0, ',', '.') }}</strong><br>
+            OTC: Rp {{ number_format($revenue_otc, 0, ',', '.') }}<br>
+            Bulanan: Rp {{ number_format($pendapatan_per_bulan, 0, ',', '.') }} x {{ $periode_bulan }} bulan =
+            Rp {{ number_format($pendapatan_per_bulan * $periode_bulan, 0, ',', '.') }}
+        </td>
+    </tr>
+
+    <tr class="table-light">
+        <th class="fw-bold">Cost IBL</th>
+        <td>
+            Total: <strong>Rp {{ number_format($revenue_total, 0, ',', '.') }}</strong><br>
+            OTC Akhir: Rp {{ number_format($revenue_otc_akhir, 0, ',', '.') }}<br>
+            Bulanan Akhir: Rp {{ number_format($revenue_bulanan_akhir, 0, ',', '.') }} x {{ $periode_bulan }} =
+            Rp {{ number_format($revenue_bulanan_akhir * $periode_bulan, 0, ',', '.') }}
+        </td>
+    </tr>
+
+    <tr class="table-light">
+        <th class="fw-bold">Cost OBL</th>
+        <td>
+            Total: <strong>Rp {{ number_format(($cost_obl_bulanan * $periode_bulan) + $cost_obl_otc, 0, ',', '.') }}</strong><br>
+            OTC: Rp {{ number_format($cost_obl_otc, 0, ',', '.') }}<br>
+            Bulanan: Rp {{ number_format($cost_obl_bulanan, 0, ',', '.') }} x {{ $periode_bulan }} =
+            Rp {{ number_format($cost_obl_bulanan * $periode_bulan, 0, ',', '.') }}
+        </td>
+    </tr>
+
+    <tr>
+        <th>OPEX (Operasional + Marketing)</th>
+        <td>
+            {{ $biaya_operasional + $biaya_marketing }}% || (Rp {{ number_format($biaya_opex_total, 0, ',', '.') }})<br>
+            <small class="text-muted">
+                Biaya Marketing: {{ $biaya_marketing }}% (Rp {{ number_format($biaya_marketing_total, 0, ',', '.') }})<br>
+                Biaya Operasional: {{ $biaya_operasional }}% (Rp {{ number_format($biaya_operasional_total, 0, ',', '.') }})
+            </small>
+        </td>
+    </tr>
+</table>
+
+<h5 class="mt-4">Tabel Proyeksi Profit & Loss (Terformat)</h5>
+<table class="table table-bordered mt-4">
+    <thead>
+        <tr>
+            <th>Label</th>
+            <th>Jumlah</th> <!-- Tambahan kolom -->
+            @foreach ($tahun_list as $tahun)
+                <th>Tahun ke-{{ $loop->index }}</th>
+            @endforeach
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>Revenue</th>
+            <td>{{ number_format($revenue_total, 0, ',', '.') }}</td>
+            @foreach ($revenue_list as $val)
+                <td>{{ number_format($val, 0, ',', '.') }}</td>
+            @endforeach
+        </tr>
+        <tr>
+            <th>Bad Debt</th>
+            <td>{{ number_format($bad_debt_total, 0, ',', '.') }}</td>
+            @foreach ($bad_debt_list as $val)
+                <td>{{ number_format($val, 0, ',', '.') }}</td>
+            @endforeach
+        </tr>
+        <tr>
+            <th>OPEX</th>
+            <td>{{ number_format($opex_total, 0, ',', '.') }}</td>
+            @foreach ($opex_list as $val)
+                <td>{{ number_format($val, 0, ',', '.') }}</td>
+            @endforeach
+        </tr>
+        <tr>
+            <th>EBITDA</th>
+            <td>{{ number_format($ebitda_total, 0, ',', '.') }}</td>
+            @foreach ($ebitda_list as $val)
+                <td>{{ number_format($val, 0, ',', '.') }}</td>
+            @endforeach
+        </tr>
+        <tr>
+            <th>Depresiasi</th>
+            <td>{{ number_format($depresiasi_total, 0, ',', '.') }}</td>
+            @foreach ($depresiasi_list as $val)
+                <td>{{ number_format($val, 0, ',', '.') }}</td>
+            @endforeach
+        </tr>
+        <tr>
+            <th>EBIT</th>
+            <td>{{ number_format($ebit_total, 0, ',', '.') }}</td>
+            @foreach ($ebit_list as $val)
+                <td>{{ number_format($val, 0, ',', '.') }}</td>
+            @endforeach
+        </tr>
+        <tr>
+            <th>Pajak</th>
+            <td>{{ number_format($pajak_total, 0, ',', '.') }}</td>
+            @foreach ($pajak_list as $val)
+                <td>{{ number_format($val, 0, ',', '.') }}</td>
+            @endforeach
+        </tr>
+        <tr>
+            <th>Net Income</th>
+            <td>{{ number_format($net_income_total, 0, ',', '.') }}</td>
+            @foreach ($net_income_list as $val)
+                <td>{{ number_format($val, 0, ',', '.') }}</td>
+            @endforeach
+        </tr>
+    </tbody>
+</table>
+
+
+<h5 class="mt-4">Cash Flow Projection</h5>
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Label</th>
+            <th class="fw-bold">Jumlah</th>
+            @foreach ($tahun_list as $tahun)
+                <th class="fw-bold">{{ $tahun }}</th>
+            @endforeach
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($cashflow_projection as $row)
+            <tr>
+                <th>{{ $row['label'] }}</th>
+                <td>{{ number_format($row['total'], 0, ',', '.') }}</td>
+                @foreach ($row['data'] as $val)
+                    <td>{{ is_numeric($val) ? number_format($val, 0, ',', '.') : $val }}</td>
+                @endforeach
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
+<h5 class="mt-4">Feasibility Analysis</h5>
+<table class="table table-bordered table-striped align-middle">
+    <tr>
+        <th>NPV</th>
+        <td>
+            Rp {{ number_format($npv, 0, ',', '.') }}
+            <span class="badge {{ $status_npv == 'Layak' ? 'bg-success' : 'bg-danger' }}">
+                {{ $status_npv }}
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <th>IRR</th>
+        <td>
+            {{ $irr }}%
+            <span class="badge {{ $status_irr == 'Layak' ? 'bg-success' : 'bg-danger' }}">
+                {{ $status_irr }}
+            </span>
+        </td>
+    </tr>
+    <tr class="{{ $payback_text == 'Kontrak Kurang Panjang' ? 'table-danger' : 'table-success' }}">
+        <th>Payback Period</th>
+        <td>
+            <span class="badge {{ $payback_text == 'Kontrak Kurang Panjang' ? 'bg-danger' : 'bg-success' }}">
+                {{ $payback_text }}
+            </span>
+        </td>
+    </tr>
+    <tr class="{{ $bet_text == 'Kontrak Kurang Panjang' ? 'table-danger' : 'table-success' }}">
+        <th>Break Even Time (BET)</th>
+        <td>
+            <span class="badge {{ $bet_text == 'Kontrak Kurang Panjang' ? 'bg-danger' : 'bg-success' }}">
+                {{ $bet_text }}
+            </span>
+        </td>
+    </tr>
+</table>
+
+
+
+<form method="GET" action="{{ url('/investasi') }}">
+    <button class="btn btn-secondary mt-3">← Kembali ke Form</button>
+</form>
+
+
+@endsection
