@@ -20,7 +20,7 @@
         <td>{{ $nama_project }}</td>
     </tr>
     <tr>
-        <th>Biaya Investasi</th>
+        <th>Biaya Investasi (BoQ)</th>
         <td>Rp {{ number_format($biaya_investasi, 0, ',', '.') }}</td>
     </tr>
     <tr>
