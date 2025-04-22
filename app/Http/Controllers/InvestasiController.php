@@ -207,6 +207,22 @@ class InvestasiController extends Controller
             ]
         ];
 
+         // BET Period
+        $cum_income = $net_income_t0-$biaya_capex;
+        $bet_bulan=null;
+        for ($bulan = 1; $bulan <= $periode_bulan; $bulan++) {
+            $cum_income += $net_income_bulanan;
+            if ($cum_income >= 0) {
+                $bet_bulan = $bulan;
+                break;
+            }
+        }
+        if ($bulan>$periode_bulan){
+            $bet_output = "Kontrak Kurang Panjang";
+        }else{
+            $bet_output = floor($bet_bulan / 12) . ' tahun ' . ($bet_bulan % 12) . ' bulan';
+        }
+
         // Payback Period
         $cum_income = $net_income_t0-$biaya_capex;
         $pbb_bulan = null;
@@ -222,24 +238,9 @@ class InvestasiController extends Controller
 
         if ($bulan>$periode_bulan){
             $pbb_output = "Kontrak Kurang Panjang";
+            $pbb_output2 = "Disarankan ".floor(($bet_bulan*2) / 12) . " tahun " . (($bet_bulan*2) % 12) . "( ".($bet_bulan*2)." bulan )";
         }else{
             $pbb_output = floor($pbb_bulan / 12) . ' tahun ' . ($pbb_bulan % 12) . ' bulan';
-        }
-
-         // BET Period
-        $cum_income = $net_income_t0-$biaya_capex;
-        $bet_bulan=null;
-        for ($bulan = 1; $bulan <= $periode_bulan; $bulan++) {
-            $cum_income += $net_income_bulanan;
-            if ($cum_income >= 0) {
-                $bet_bulan = $bulan;
-                break;
-            }
-        }
-        if ($bulan>$periode_bulan){
-            $bet_output = "Kontrak Kurang Panjang";
-        }else{
-            $bet_output = floor($bet_bulan / 12) . ' tahun ' . ($bet_bulan % 12) . ' bulan';
         }
 
         $payback_text = $pbb_output;
@@ -287,6 +288,7 @@ class InvestasiController extends Controller
             'ebitda_total',
             'depresiasi_total',
             'ebit_total',
+            'pbb_output2',
             'pajak_total',
             'net_income_total',
             'cashflow_projection',

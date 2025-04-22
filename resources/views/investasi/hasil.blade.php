@@ -199,6 +199,9 @@
             <span class="badge {{ $payback_text == 'Kontrak Kurang Panjang' ? 'bg-danger' : 'bg-success' }}">
                 {{ $payback_text }}
             </span>
+            <span class="badge {{ $pbb_output2 == 'Kontrak Kurang Panjang' ? 'bg-danger' : 'bg-success' }}">
+                {{ $pbb_output2 }}
+            </span>
         </td>
     </tr>
     <tr class="{{ $bet_text == 'Kontrak Kurang Panjang' ? 'table-danger' : 'table-success' }}">
