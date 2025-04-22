@@ -238,7 +238,7 @@ class InvestasiController extends Controller
 
         if ($bulan>$periode_bulan){
             $pbb_output = "Kontrak Kurang Panjang";
-            $pbb_output2 = "Disarankan ".floor(($bet_bulan*2) / 12) . " tahun " . (($bet_bulan*2) % 12) . "( ".($bet_bulan*2)." bulan )";
+            $pbb_output2 = "Disarankan ".floor(($bet_bulan*2) / 12) . " tahun " . (($bet_bulan*2) % 12) . " bulan ( ".($bet_bulan*2)." bulan )";
         }else{
             $pbb_output = floor($pbb_bulan / 12) . ' tahun ' . ($pbb_bulan % 12) . ' bulan';
         }
