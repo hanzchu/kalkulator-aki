@@ -136,7 +136,7 @@ class InvestasiController extends Controller
         }
 
         // Tambahkan bagian ini di bawahnya:
-        $revenue_total = array_sum($revenue_list);
+        $revenue_total_list = array_sum($revenue_list);
         $bad_debt_total = array_sum($bad_debt_list);
         $opex_total = array_sum($opex_list);
         $ebitda_total = array_sum($ebitda_list);
@@ -236,6 +236,8 @@ class InvestasiController extends Controller
             }
         }
 
+        $pbb_output2 = null;
+        
         if ($bulan>$periode_bulan){
             $pbb_output = "Kontrak Kurang Panjang";
             $pbb_output2 = "Disarankan ".floor(($bet_bulan*2) / 12) . " tahun " . (($bet_bulan*2) % 12) . " bulan ( ".($bet_bulan*2)." bulan )";
